@@ -10,6 +10,10 @@ def contact(request):
 def showtask(request):
     return HttpResponse("This is our task page")
 
+def show_task(request, id):
+    print("Id",id)
+    return HttpResponse(f"This is dynamic page {id}")
+
 
 
     

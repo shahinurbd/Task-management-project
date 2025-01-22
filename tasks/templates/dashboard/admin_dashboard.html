@@ -1,0 +1,118 @@
+{% extends "dashboard/dashboard.html" %}
+{% block title %}{% endblock title %}
+{% block tasks %}
+
+<!-- task table -->
+<div class="bg-white rounded-xl shadow-sm ">
+    <div class="grid grid-cols-4 border-b border-gray-100 p-4 text-sm text-gray-500">
+        <div>TASK TITLE</div>
+        <div>PRIORITY</div>
+        <div>TEAM</div>
+        <div>CREATED AT</div>
+
+    </div>
+    <!-- task items -->
+    <div class="divide-y divide-gray-100">
+        <div class="grid grid-cols-4 gap-4 item-center p-4 border-b border-gray-100">
+            <div class="flex items-center gap-2">
+                <div class="w-2 h-2 bg-green-500 rounded-full">
+                </div>
+                <div>
+                    <span>Test Low Task</span>
+                </div>
+            </div>
+            
+            <div>
+                <span class="px-3 py-1  rounded-full bg-blue-50 text-blue-600 text-sm">Low</span>
+            </div>
+            <div class="flex -space-x-2">
+                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">
+                    CA
+                </div>
+                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">
+                    JS
+                </div>
+                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">
+                    B
+                </div>
+            </div>
+            <div>
+                <span class="text-gray-500">9 months ago</span>
+            </div>
+
+        </div>
+        
+    </div>
+    <!-- task items -->
+    <div class="divide-y divide-gray-100">
+        <div class="grid grid-cols-4 gap-4 item-center p-4 border-b border-gray-100">
+            <div class="flex items-center gap-2">
+                <div class="w-2 h-2 bg-green-500 rounded-full">
+                </div>
+                <div>
+                    <span>Test Task</span>
+                </div>
+            </div>
+            
+            <div>
+                <span class="px-3 py-1  rounded-full bg-green-50 text-green-600 text-sm">Medium</span>
+            </div>
+            <div class="flex -space-x-2">
+                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">
+                    AJ
+                </div>
+                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">
+                    EV
+                </div>
+                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">
+                    B
+                </div>
+            </div>
+            <div>
+                <span class="text-gray-500">9 months ago</span>
+            </div>
+
+        </div>
+        
+    </div>
+    <!-- task items -->
+    <div class="divide-y divide-gray-100">
+        <div class="grid grid-cols-4 gap-4 item-center p-4">
+            <div class="flex items-center gap-2">
+                <div class="w-2 h-2 bg-green-500 rounded-full">
+                </div>
+                <div>
+                    <span>Test Task</span>
+                </div>
+            </div>
+            
+            <div>
+                <span class="px-3 py-1  rounded-full bg-red-50 text-red-600 text-sm">High</span>
+            </div>
+            <div class="flex -space-x-2">
+                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">
+                    CA
+                </div>
+                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">
+                    JS
+                </div>
+                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">
+                    AJ
+                </div>
+                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm border-2 border-white">
+                    B
+                </div>
+            </div>
+            <div>
+                <span class="text-gray-500">10 months ago</span>
+            </div>
+
+        </div>
+        
+    </div>
+  </div>
+   
+</div>
+
+{% endblock tasks %}
+

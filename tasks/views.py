@@ -1,18 +1,25 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 # Create your views here.
-def home(request):
-    return HttpResponse("<h1>Welcome Home</h1>")
+def admin_dashboard(request):
+    return render(request, "dashboard/admin_dashboard.html")
 
-def contact(request):
-    return HttpResponse("This is contact page")
+def user_dashboard(request):
+    return render(request, "dashboard/user_dashboard.html")
 
-def showtask(request):
-    return HttpResponse("This is our task page")
+def test(request):
+    names = ["shahin", "hasan", "zahid"]
+    count = 0
+    for name in names:
+        count += 1
 
-def show_task(request, id):
-    print("Id",id)
-    return HttpResponse(f"This is dynamic page {id}")
+    context = {
+        "names" : names,
+        "age" : 25,
+        "count" : count
+    }
+    return render(request, "test.html",context)
+
 
 
 

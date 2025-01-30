@@ -8,15 +8,18 @@
 
 </head>
 <body>
-    <div class="w-1/2 mx-auto mt-10">
+    <div class="w-1/2 mx-auto mt-10 mb-10">
         <div>
-            {% if message %}
-                <p>{{message}}</p>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="px-2 py-1 {% if message.tags == 'success' %}bg-gray-500{% endif %}">{{message}}</div>
+                {% endfor %}
             {% endif %}
         </div>
         <form method="POST">
             {% csrf_token %}
-            {{ form.as_p }}
+            {{ task_form }}
+            {{ task_detail_form }}
             <button type="submit" class="bg-rose-600 p-2 text-white rounded-lg mt-4">Submit</button>
         </form>
     </div>

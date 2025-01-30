@@ -1,5 +1,5 @@
 from django import forms
-from tasks.models import Task
+from tasks.models import Task,TaskDetail
 
 #django form
 class TaskForm(forms.Form):
@@ -43,6 +43,10 @@ class StyleFormMixin:
                field.widget.attrs.update({
                 'class': "space-y-2"
                 })
+            else:
+                field.widget.attrs.update({
+                    'class': self.default_class
+                })
                
 
 
@@ -73,6 +77,17 @@ class TaskModelForm(StyleFormMixin,forms.ModelForm):
     def __init__(self, *arg, **kwarg):
         super().__init__(*arg, **kwarg)
         self.apply_style_widgets()
+
+
+class TaskDetailModelForm(StyleFormMixin,forms.ModelForm):
+    class Meta:
+        model = TaskDetail
+        fields = ['priority','notes']
+
+    def __init__(self, *arg, **kwarg):
+        super().__init__(*arg, **kwarg)
+        self.apply_style_widgets()
+
 
 
 

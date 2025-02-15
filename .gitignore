@@ -2,3 +2,4 @@ Module-2/
 task_env/
 __pycache__/
 node_modules/
+.env

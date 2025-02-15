@@ -20,6 +20,12 @@ class TaskForm(forms.Form):
 
 class StyleFormMixin:
     """Mixinig to apply style to form field"""
+
+    def __init__(self, *arg, **kwarg):
+        super().__init__(*arg, **kwarg)
+        self.apply_style_widgets()
+
+
     default_class = "border-2 border-gray-300 w-full p-3 rounded-lg shadow-sm focus:border-rose-500 focus:ring-rose-500 mt-2"
 
     def apply_style_widgets(self):
@@ -47,8 +53,6 @@ class StyleFormMixin:
                 field.widget.attrs.update({
                     'class': self.default_class
                 })
-               
-
 
 
 #django model form
@@ -60,7 +64,7 @@ class TaskModelForm(StyleFormMixin,forms.ModelForm):
 
         widgets = {
             'due_date': forms.SelectDateWidget,
-            'assigned_to': forms.CheckboxSelectMultiple
+            'assigned_to': forms.CheckboxSelectMultiple,
         }
 
         # exclude = ['project','is_completed','created_at','updated_at']
@@ -73,10 +77,6 @@ class TaskModelForm(StyleFormMixin,forms.ModelForm):
         #     'due_date': forms.SelectDateWidget,
         #     'assigned_to': forms.CheckboxSelectMultiple
         # }
-    """widget using maxining"""
-    def __init__(self, *arg, **kwarg):
-        super().__init__(*arg, **kwarg)
-        self.apply_style_widgets()
 
 
 class TaskDetailModelForm(StyleFormMixin,forms.ModelForm):
@@ -84,9 +84,7 @@ class TaskDetailModelForm(StyleFormMixin,forms.ModelForm):
         model = TaskDetail
         fields = ['priority','notes']
 
-    def __init__(self, *arg, **kwarg):
-        super().__init__(*arg, **kwarg)
-        self.apply_style_widgets()
+    
 
 
 

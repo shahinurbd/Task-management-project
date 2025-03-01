@@ -47,7 +47,7 @@ class StyleFormMixin:
                 })
             elif isinstance(field.widget, forms.CheckboxSelectMultiple):
                field.widget.attrs.update({
-                'class': "space-y-2"
+                'class': ""
                 })
             else:
                 field.widget.attrs.update({
@@ -82,7 +82,7 @@ class TaskModelForm(StyleFormMixin,forms.ModelForm):
 class TaskDetailModelForm(StyleFormMixin,forms.ModelForm):
     class Meta:
         model = TaskDetail
-        fields = ['priority','notes']
+        fields = ['priority','notes', 'asset']
 
     
 

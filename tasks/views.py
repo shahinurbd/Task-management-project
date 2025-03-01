@@ -1,19 +1,23 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from tasks.forms import TaskForm, TaskModelForm,TaskDetailModelForm
-from tasks.models import Employee,Task,TaskDetail,Project
+from tasks.models import Task,TaskDetail,Project
 from datetime import date
 from django.db.models import Q,Count,Min,Max,Avg
 from django.contrib import messages
-# Create your views here.
-def admin_dashboard(request):
-   
+from django.contrib.auth.decorators import user_passes_test,login_required,permission_required
+from users.views import is_admin
 
-    #getting task count
-    # total_task = tasks.count()
-    # pending_task = Task.objects.filter(status='PENDING').count()
-    # in_progress_task = Task.objects.filter(status='IN_PROGRESS').count()
-    # completed_task = Task.objects.filter(status='COMPLETED').count()
+def is_manager(user):
+    return user.groups.filter(name='Manager').exists()
+
+
+def is_employee(user):
+    return user.groups.filter(name='Manager').exists()
+
+
+
+def admin_dashboard(request):
 
     type = request.GET.get('type', 'all')
 
@@ -47,30 +51,18 @@ def admin_dashboard(request):
         "counts": counts
     }
     return render(request, "dashboard/admin_dashboard.html", context)
-
-def user_dashboard(request):
+@user_passes_test(is_employee)
+def employee_dashboard(request):
     return render(request, "dashboard/user_dashboard.html")
 
-def test(request):
-    names = ["shahin", "hasan", "zahid"]
-    count = 0
-    for name in names:
-        count += 1
-
-    context = {
-        "names" : names,
-        "age" : 25,
-        "count" : count
-    }
-    return render(request, "test.html",context)
-
+@login_required
+@permission_required('tasks.add_task', login_url='no-permission')
 def create_task(request):
-    # employee = Employee.objects.all()
     task_form = TaskModelForm()
     task_detail_form = TaskDetailModelForm()
     if request.method == "POST":
         task_form = TaskModelForm(request.POST)
-        task_detail_form = TaskDetailModelForm(request.POST)
+        task_detail_form = TaskDetailModelForm(request.POST, request.FILES)
 
         if task_form.is_valid() and task_detail_form.is_valid():
 
@@ -88,7 +80,8 @@ def create_task(request):
     context = {"task_form": task_form, "task_detail_form": task_detail_form}
     return render(request,'task_form.html',context)
 
-
+@login_required
+@permission_required('tasks.change_task', login_url='no-permission')
 def update_task(request, id):
     task = Task.objects.get(id=id)
     task_form = TaskModelForm(instance=task)
@@ -113,59 +106,52 @@ def update_task(request, id):
     context = {"task_form": task_form, "task_detail_form": task_detail_form}
     return render(request,'task_form.html',context)
 
+@login_required
+@permission_required('tasks.delete_task', login_url='no-permission')
 def delete_task(request, id):
     if request.method == 'POST':
         task = Task.objects.get(id=id)
         task.delete()
         messages.success(request, 'Task Deleted Successfully')
-        return redirect('admin-dashboard')
+        return redirect('manager-dashboard')
     else:
         messages.error(request, 'Something went wrong')
-        return redirect('admin-dashboard')
+        return redirect('manager-dashboard')
         
 
-
+@login_required
+@permission_required('tasks.view_task', login_url='no-permission')
 def view_task(request):
-    #for retrive all data
-    #tasks = Task.objects.all()
-
-    #for retrive specefic data
-    #task_3 = Task.objects.get(id=1)
-
-    #get first data
-    #first_task = Task.objects.first()
-
-    # return render(request, 'show_task.html', {"tasks": tasks, "task3": task_3, "first_task": first_task})
-    #show the tasks that are pending
-    #tasks = Task.objects.filter(status="PENDING")
-    #show the task wich due_date is today
-    #tasks = Task.objects.filter(due_date=date.today())
-    """show that task that are not Low"""
-    #tasks = TaskDetail.objects.exclude(priority="L")
-    """show the task which contain 'paper' AND status pending"""
-    #tasks = Task.objects.filter(title__icontains='c', status="PENDING")
-
-    """show the task which are pending or in progress"""
-    #tasks = Task.objects.filter(Q(status="PENDING") | Q(status="IN_PROGRESS"))
-
-    #tasks = Task.objects.filter(status="PENDING").exists()
-
-    #Select_related (foreignKey, OneToOneField)
-    #tasks = Task.objects.select_related('details').all()
-    #tasks = TaskDetail.objects.select_related('task').all()
-    #tasks = Task.objects.select_related('project').all()
-
-    """prefetch_related (reverse foregnKey, ManyToMany)"""
-    #tasks = Project.objects.prefetch_related('task_set').all()
-    #tasks = Task.objects.prefetch_related('assigned_to').all()
-    # tasks = Employee.objects.prefetch_related('tasks').all()
-    # return render(request, "show_task.html", {"tasks": tasks})
-
-    """aggrigate funtion"""
-    #task_count = Task.objects.aggregate(num_cnt=Count('id'))
 
     projects = Project.objects.annotate(num_task=Count('task')).order_by('num_task')
     return render(request, "show_task.html", {"projects": projects})
+
+
+
+@login_required
+@permission_required('tasks.view_task', login_url='no-permission')
+def task_details(request, task_id):
+    task = Task.objects.get(id=task_id)
+    status_choices = Task.STATUS_CHOICES
+    if request.method == "POST":
+        selected_status = request.POST.get('task_status')
+        task.status = selected_status
+        task.save()
+        return redirect('task-details', task.id)
+    return render(request,'task_details.html', {'task': task, 'status_choices': status_choices})
+
+
+@login_required
+def dashboard(request):
+    if is_manager(request.user):
+        return redirect('manager-dashboard')
+    elif is_employee(request.user):
+        return redirect('user-dashboard')
+    elif is_admin(request.user):
+        return redirect('admin-dashboard')
+    
+    return redirect('no-permission')
+
 
 
 

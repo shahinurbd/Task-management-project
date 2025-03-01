@@ -1,5 +1,5 @@
-from django.contrib.auth.forms import UserCreationForm 
-from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.models import User,Group,Permission
 from django import forms
 from django.core.validators import RegexValidator
 import re
@@ -56,5 +56,31 @@ class CustomRegistrationForm(StyleFormMixin,forms.ModelForm):
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError("This email is already in use. Please use a different email.")
         return email
+    
 
+class LoginForm(StyleFormMixin,AuthenticationForm):
+    def __init__(self,*arg,**kwargs):
+        super().__init__(*arg,**kwargs)
+
+
+
+        
+class AssignRoleForm(StyleFormMixin,forms.Form):
+    role = forms.ModelChoiceField(
+        queryset=Group.objects.all(),
+        empty_label="Select a Role"
+    )
+
+
+class CreateGroupForm(StyleFormMixin, forms.ModelForm):
+    permissions = forms.ModelMultipleChoiceField(
+        queryset=Permission.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label='Assign Permission'
+    )
+
+    class Meta:
+        model = Group
+        fields = ['name', 'permissions']
 

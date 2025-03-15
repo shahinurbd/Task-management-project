@@ -67,16 +67,7 @@ class TaskModelForm(StyleFormMixin,forms.ModelForm):
             'assigned_to': forms.CheckboxSelectMultiple,
         }
 
-        # exclude = ['project','is_completed','created_at','updated_at']
-
-        """menual widget"""
-        # widgets = {
-        #     'title': forms.TextInput(attrs={
-                
-        #     }),
-        #     'due_date': forms.SelectDateWidget,
-        #     'assigned_to': forms.CheckboxSelectMultiple
-        # }
+        
 
 
 class TaskDetailModelForm(StyleFormMixin,forms.ModelForm):

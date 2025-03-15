@@ -100,21 +100,7 @@ class ActiveUser(View):
         except:
             return HttpResponse("User not found")
 
-    
-    
-# @user_passes_test(is_admin, login_url='no-permission')
-# def admin_dashboard(request):
-#     users = User.objects.prefetch_related(
-#         Prefetch('groups', queryset=Group.objects.all(), to_attr='all_groups')
-#     ).all()
 
-#     for user in users:
-#         if user.all_groups:
-#             user.group_name = user.all_groups[0].name
-#         else:
-#             user.group_name = "No Group Assigned"
-
-#     return render(request,'admin/dashboard.html', {"users": users})
 
 
 class AdminDashboard(LoginRequiredMixin,UserPassesTestMixin,View):
@@ -138,22 +124,7 @@ class AdminDashboard(LoginRequiredMixin,UserPassesTestMixin,View):
         return render(request,'admin/dashboard.html', {"users": users})
 
 
-# @user_passes_test(is_admin, login_url='no-permission')
-# def assign_role(request, user_id):
-#     user = User.objects.get(id=user_id)
-#     form = AssignRoleForm()
-#     if request.method == "POST":
-#         form = AssignRoleForm(request.POST)
-#         if form.is_valid():
-#             role = form.cleaned_data.get('role')
-#             user.groups.clear()
-#             user.groups.add(role)
-#             messages.success(request,f"User {user.username} has been assigned to the {role.name} role")
-#             return redirect('admin-dashboard')
-#     return render(request, 'admin/assign_role.html', {"form": form})
 
-# role_permissions = [login_required, permission_required(is_admin, login_url='no-permission')]
-# @method_decorator(role_permissions, name='dispatch')
 class AssignRole(LoginRequiredMixin,View):
 
     login_url = 'no-permission'
@@ -182,21 +153,6 @@ class AssignRole(LoginRequiredMixin,View):
 
 
 
-# @user_passes_test(is_admin, login_url='no-permission')
-# def create_group(request):
-#     form = CreateGroupForm()
-#     if request.method == 'POST':
-#         form = CreateGroupForm(request.POST)
-
-#         if form.is_valid():
-#             group = form.save()
-#             messages.success(request, f"Group {
-#                              group.name} has been created successfully")
-#             return redirect('create-group')
-
-#     return render(request, 'admin/create_group.html', {'form': form})
-
-
 class CreateGroup(UserPassesTestMixin,View):
 
     login_url = 'no-permission'
@@ -219,12 +175,6 @@ class CreateGroup(UserPassesTestMixin,View):
                 messages.success(request, f"Group {group.name} has been created successfully")
                 return redirect('create-group')
 
-
-
-# @user_passes_test(is_admin, login_url='no-permission')
-# def group_list(request):
-#     groups = Group.objects.prefetch_related('permissions').all()
-#     return render(request, 'admin/group_list.html', {'groups': groups})
 
 
 

@@ -28,41 +28,6 @@ def is_employee(user):
 
 
 
-# def admin_dashboard(request):
-
-#     type = request.GET.get('type', 'all')
-
-
-#     counts = Task.objects.aggregate(
-
-#         total=Count('id'),
-#         completed=Count('id', filter=Q(status='COMPLETED')),
-#         in_progress=Count('id', filter=Q(status='IN_PROGRESS')),
-#         pending=Count('id', filter=Q(status='PENDING'))
-#     )
-
-
-#     #retriving task data
-
-#     base_query = Task.objects.select_related('details').prefetch_related('assigned_to')
-
-#     if type=='completed':
-#         tasks = base_query.filter(status='COMPLETED')
-#     elif type=='in-progress':
-#         tasks = base_query.filter(status='IN_PROGRESS')
-#     if type=='pending':
-#         tasks = base_query.filter(status='PENDING')
-#     if type=='all':
-#         tasks = base_query.all()
-        
-
-#     context = {
-#         "tasks": tasks,
-#         "counts": counts
-#     }
-#     return render(request, "dashboard/admin_dashboard.html", context)
-
-
 class AdminDashboard(UserPassesTestMixin,View):
 
     login_url = 'no-permission'
@@ -102,13 +67,6 @@ class AdminDashboard(UserPassesTestMixin,View):
             "counts": counts
         }
         return render(request, "dashboard/admin_dashboard.html", context)
-
-
-
-
-# @user_passes_test(is_employee)
-# def employee_dashboard(request):
-#     return render(request, "dashboard/user_dashboard.html")
 
 
 

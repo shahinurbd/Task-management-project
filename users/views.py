@@ -8,12 +8,13 @@ from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.decorators import login_required,user_passes_test,permission_required
 from django.db.models import Prefetch
 from django.contrib.auth.views import LoginView,PasswordChangeView,PasswordResetView,PasswordResetConfirmView
-from django.views.generic import TemplateView,UpdateView
+from django.views.generic import TemplateView,UpdateView,CreateView
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 from django.views import View
 from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin,PermissionRequiredMixin,UserPassesTestMixin
+from django.views.generic.edit import FormView
 
 
 User = get_user_model()
@@ -25,26 +26,18 @@ def is_admin(user):
 
 
 
-class SignUp(View):
+class SignUpView(FormView):
+    template_name = "registration/register.html"
+    form_class = CustomRegistrationForm
+    success_url = reverse_lazy("sign-in")
 
-    def get(self,request,*args,**kwargs):
-        form = CustomRegistrationForm()
-        return render(request, 'registration/register.html', {"form": form})
-    
-    def post(self,request,*args,**kwargs):
-        if request.method == 'POST':
-            form = CustomRegistrationForm(request.POST)
-            if form.is_valid():
-                user = form.save(commit=False)
-                user.set_password(form.cleaned_data.get('password1'))
-                user.is_active = False
-                user.save()
-                messages.success(
-                    request, 'A Confirmation mail sent. Please check your email')
-                return redirect('sign-in')
-
-            else:
-                print("Form is not valid")
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        user.set_password(form.cleaned_data.get('password'))
+        user.is_active = False
+        user.save()
+        messages.success(self.request, 'A Confirmation mail has been sent.Please check your email.')
+        return super().form_valid(form)
 
 
 
@@ -95,13 +88,12 @@ class AdminDashboard(LoginRequiredMixin,UserPassesTestMixin,View):
 
 
 
-class AssignRole(LoginRequiredMixin,View):
+class AssignRole(LoginRequiredMixin,UserPassesTestMixin,View):
 
     login_url = 'no-permission'
     def test_func(self):
         return self.request.user.groups.filter(name="Admin").exists()
     def handle_no_permission(self):
-        from django.shortcuts import redirect
         return redirect('no-permission')
 
     def get(self, request, user_id, *args, **kwargs):
@@ -183,7 +175,7 @@ class ProfileView(LoginRequiredMixin,TemplateView):
         return context
     
 
-class ChangePassword(PasswordChangeView):
+class ChangePassword(LoginRequiredMixin,PasswordChangeView):
     template_name = 'accounts/password_change.html'
     form_class = CustomPasswordChangeForm
 
